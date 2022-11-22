@@ -6,13 +6,20 @@ package com.ypr.whb.data;
  * @author chaos
  */
 public class TableData {
-    // 储存当前应该下棋玩家棋色
-    private static String nowColor = Spot.notChess;
-    // 游戏是否结束（true已结束，false未结束）
-    private static boolean gameOver = false;
-    private final static Spot[][] spots = new Spot[19][19];
 
-    // 储存游戏结束时，五子连珠起始位置
+    private static String nowColor = Spot.notChess;
+
+    public static int spotNum=19;
+
+    private static boolean gameOver = false;
+
+    private final static Spot[][] spots = new Spot[spotNum][spotNum];
+
+    /**
+     *  储存游戏结束时，五子连珠起始位置
+      */
+
+
     public static int indexRow = 0;
     public static int indexCol = 0;
     public static int endRow = 0;
@@ -101,13 +108,14 @@ public class TableData {
                 }
 
                 // 判断此点向下最大连棋数
-                if (i <= 14)
+                if (i <= 14) {
                     for (int m = 1; m <= 4; m++) {
                         String mColor = spots[i + m][j].getColor();
                         if (mColor.equals(color)) {
                             countCol++;
                         }
                     }
+                }
 
                 // 判断此点右下最大连棋数
                 if (i <= 14 && j <= 14) {

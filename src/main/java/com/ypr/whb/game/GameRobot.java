@@ -25,10 +25,11 @@ public class GameRobot {
         UserPanel.setUserInfo(Player.myPlayer, UserPanel.left);
         UserPanel.setUserInfo(playerAI, UserPanel.right);
 
-        // 产生一个线程，用于下棋
+
         new Thread(() -> {
             String color = playerAI.getColor();
             while (!GameCenter.isEnd()) {
+                //避免性能损耗太多
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

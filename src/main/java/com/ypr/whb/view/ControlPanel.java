@@ -21,8 +21,9 @@ class ControlPanel extends JPanel {
     private JButton btnShowChess, btnAgain, btnChessAi, btnTest, btnCoupe, btnOnline, btnRobot;
 
     ControlPanel() {
+
+
         this.setLayout(new FlowLayout(FlowLayout.CENTER));
-        this.setBackground(new Color(220, 220, 220, 220));
         btnAgain = new JButton("重新游戏");
         btnCoupe = new JButton("双人对战");
         btnRobot = new JButton("人机对战");
@@ -38,8 +39,8 @@ class ControlPanel extends JPanel {
         this.add(btnChessAi);
         this.add(btnShowChess);
         this.add(btnTest);
-
         my = this;
+
         addListener();
     }
 
@@ -62,7 +63,9 @@ class ControlPanel extends JPanel {
             btnOnline.setEnabled(true);
             btnChessAi.setEnabled(true);
             try {
-                MySocket.socket.close();
+                if(MySocket.socket!=null && MySocket.socket.isConnected()){
+                    MySocket.socket.close();
+            }
             } catch (Exception e) {
                 e.printStackTrace();
             }

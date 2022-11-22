@@ -25,16 +25,17 @@ public class ChatRoom extends JPanel {
     public final static int HE_TEXT = 1;
 
     ChatRoom() {
-        this.setLayout(new FlowLayout(FlowLayout.LEFT));
-        jArea = new JTextArea(7, 19);
-        jText = new JTextField(14);
+        this.setLayout(new FlowLayout(FlowLayout.CENTER));
+        jArea = new JTextArea(10, 30);
+        jText = new JTextField(30);
+        jText.setSize(30,30);
         btClear = new JButton("清空");
         btSend = new JButton("发送");
         jArea.setEnabled(false);
         // 自动换行
         jArea.setLineWrap(true);
         jArea.setText("聊天室内容：");
-        jArea.setFont(new Font("宋体", Font.BOLD, 14));
+        jArea.setFont(new Font("宋体", Font.BOLD, 20));
         JScrollPane jsp = new JScrollPane(jArea);
         jsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         jsp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

@@ -10,10 +10,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+
 
 /**
  * 界面显示 之 棋桌面板，显示棋盘，绘制棋子
@@ -33,6 +32,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 主界面重新绘制后，棋盘绘制不完整(加入线程,等待棋盘绘制完成,等待棋子绘制完成,再绘制结果)
  * @author 帝睿
  */
+
 public class ChessBroad extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -41,16 +41,20 @@ public class ChessBroad extends JPanel {
      * 棋子大小
      */
     static int chessSize;
+
     static ChessBroad myBroad;
+
     /**
-     * 线程，解决棋盘覆盖掉棋子
+     * 胜利的条件
      */
-    private static Thread gThread, allChessThread;
+    private static int victory=5;
+
+    //利用单线程池的fifo，达到线程池内线程顺序执行。
 
     private static ExecutorService threadPool;
 
     ChessBroad() {
-        threadPool= Executors.newFixedThreadPool(10);
+        threadPool= Executors.newSingleThreadExecutor();
         this.setVisible(true);
         // 设置鼠标形状为手型
         this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -62,8 +66,7 @@ public class ChessBroad extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        paintTable();
-        painAllChess();
+        paintChessBroad();
         paintResult();
     }
 
@@ -71,8 +74,8 @@ public class ChessBroad extends JPanel {
      * 界面显示，控件加载完毕后执行
      */
     static void init() {
-        chessSize = myBroad.getWidth() / 19;
-        paintTable();
+        chessSize = myBroad.getWidth() / TableData.spotNum;
+        paintChessBroad();
         myBroad.repaint();
     }
 
@@ -193,9 +196,9 @@ public class ChessBroad extends JPanel {
     }
 
     /**
-     * 绘制棋桌
+     * 绘制整个棋桌
      */
-    private static void paintTable() {
+    private static void paintChessBroad() {
         final Graphics graphics = myBroad.getGraphics();
         graphics.setFont(new Font("黑体", Font.BOLD, 20));
         threadPool.execute(() -> {
@@ -204,7 +207,7 @@ public class ChessBroad extends JPanel {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            for (int i = 0; i < 19; i++) {
+            for (int i = 0; i < TableData.spotNum; i++) {
                 graphics.drawString("" + (i + 1), 0, 20 + chessSize * i);
                 graphics.drawLine(chessSize / 2, chessSize / 2 + chessSize * i,
                         chessSize / 2 + chessSize * 18, chessSize / 2
@@ -215,61 +218,13 @@ public class ChessBroad extends JPanel {
                         chessSize / 2 + chessSize * i, chessSize / 2
                                 + chessSize * 18);
             }
-        });
-        // 在线程中绘制棋盘
-//        gThread = new Thread(() -> {
-//            try {
-//                Thread.sleep(10);
-//            } catch (InterruptedException e) {
-//            }
-//            for (int i = 0; i < 19; i++) {
-//                graphics.drawString("" + (i + 1), 0, 20 + chessSize * i);
-//                graphics.drawLine(chessSize / 2, chessSize / 2 + chessSize * i,
-//                        chessSize / 2 + chessSize * 18, chessSize / 2
-//                                + chessSize * i);
-//
-//                graphics.drawString("" + (i + 1), chessSize * i + 8, 15);
-//                graphics.drawLine(chessSize / 2 + chessSize * i, chessSize / 2,
-//                        chessSize / 2 + chessSize * i, chessSize / 2
-//                                + chessSize * 18);
-//            }
-//        });
-//        gThread.start();
-
-    }
-
-    /**
-     * 绘制所有棋子
-     */
-    private static void painAllChess() {
-        // 绘制所有棋子线程，没有线程时棋子可能绘制失败！
-        threadPool.execute(() -> {
-            try {// 等待棋桌绘制完成
-//                gThread.join();
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            for (int i = 0; i < 19; i++) {
-                for (int j = 0; j < 19; j++) {
+            for (int i = 0; i < TableData.spotNum; i++) {
+                for (int j = 0; j < TableData.spotNum; j++) {
                     Spot spot = TableData.getSpot(i, j);
                     paintChessImages(spot);
                 }
             }
         });
-//        allChessThread = new Thread(() -> {
-//            try {// 等待棋桌绘制完成
-//                gThread.join();
-//            } catch (InterruptedException e) {
-//            }
-//            for (int i = 0; i < 19; i++) {
-//                for (int j = 0; j < 19; j++) {
-//                    Spot spot = TableData.getSpot(i, j);
-//                    paintChessImages(spot);
-//                }
-//            }
-//        });
-//        allChessThread.start();
     }
 
     /**
@@ -277,14 +232,8 @@ public class ChessBroad extends JPanel {
      */
     private static void paintResult() {
         threadPool.execute(() -> {
-            try {
-//                allChessThread.join();
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             if (GameCenter.isEnd()) {
-                if (TableData.endRow + TableData.endCol < 5) {
+                if (TableData.endRow + TableData.endCol < victory) {
                     return;
                 }
 
@@ -302,30 +251,6 @@ public class ChessBroad extends JPanel {
                 g.drawLine(indexX, indexY, endX, endY);
             }
         });
-//        new Thread(() -> {
-//            try {
-//                allChessThread.join();
-//            } catch (InterruptedException e) {
-//            }
-//            if (GameCenter.isEnd()) {
-//                if (TableData.endRow + TableData.endCol < 5) {
-//                    return;
-//                }
-//
-//                System.out.println("赢棋起始位置：" + TableData.indexRow + " " + TableData.indexCol);
-//                System.out.println("赢棋终止位置：" + TableData.endRow + " " + TableData.endCol);
-//
-//                Graphics2D g = (Graphics2D) myBroad.getGraphics();
-//                int indexX = Coordinate.colToX(TableData.indexCol + 1);
-//                int indexY = Coordinate.rowToY(TableData.indexRow + 1);
-//                int endX = Coordinate.colToX(TableData.endCol + 1);
-//                int endY = Coordinate.rowToY(TableData.endRow + 1);
-//                g.setColor(Color.yellow);
-//                g.setStroke(new BasicStroke(5.0f));
-//                g.setFont(new Font("黑体", Font.BOLD, 150));
-//                g.drawLine(indexX, indexY, endX, endY);
-//            }
-//        }).start();
 
     }
 }

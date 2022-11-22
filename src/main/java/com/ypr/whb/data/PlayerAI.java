@@ -12,6 +12,7 @@ import java.util.Random;
  *
  * @author chaos
  */
+
 public class PlayerAI extends Player {
 
     public PlayerAI() {
@@ -43,16 +44,19 @@ public class PlayerAI extends Player {
         String matchColor = Spot.getBackColor(mColor);// 得到对手的棋色
         Spot matchSpot = maxSpot(matchColor);
 
-        int a = Algorithm.getWeight(maxWeightSpot, mColor);
-        int b = Algorithm.getWeight(matchSpot, matchColor);
-        System.out.println("我方最大值:" + a + ",  对方最大值:" + b);
-        if (b - a > 550) {
+        int max_We = Algorithm.getWeight(maxWeightSpot, mColor);
+        int max_They = Algorithm.getWeight(matchSpot, matchColor);
+        System.out.println("我方最大值:" + max_We + ",  对方最大值:" + max_They);
+        if (max_They - max_We > 550) {
             // 与对手的权值差是否超过100
             maxWeightSpot = matchSpot;
         }
         // 重新生成Spot对象，防止棋色错误
         int row = maxWeightSpot.getRow();
         int col = maxWeightSpot.getCol();
+
+        System.out.println("AI落子为行：" +(row+1)+"列："+(col+1));
+
         return new Spot(row, col, mColor);
     }
 
@@ -102,6 +106,7 @@ public class PlayerAI extends Player {
         }
 
         int max = 0;
+
         for (int i = 0; i < list.size() - 1; i++) {
             if (list.get(max) < list.get(i + 1)) {
                 max = i + 1;

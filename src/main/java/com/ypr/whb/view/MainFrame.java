@@ -19,12 +19,12 @@ public class MainFrame extends JFrame {
 
     static final String VERSION = "final";
     static final String BUILD_TIME = "2022.11.30";
-    static final String COPYRIGHT = "自主设计开发  拥有本软件所有版权";
+
 
     // 初始化窗口大小
 
-    private int width = 760;
-    private int height = 730;
+    private int width = 1500;
+    private int height = 1500;
 
     // 三个主面板
 
@@ -32,8 +32,8 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         mainFrame = this;
-        UIManager.put("Label.font", new Font("宋体", Font.BOLD, 15));
-        UIManager.put("Button.font", new Font("宋体", Font.PLAIN, 20));
+        UIManager.put("Label.font", new Font("宋体", Font.BOLD, 30));
+        UIManager.put("Button.font", new Font("宋体", Font.PLAIN, 40));
 
         this.setTitle(" 五子棋  " + BUILD_TIME);
         this.setSize(width, height);
@@ -58,14 +58,20 @@ public class MainFrame extends JFrame {
 
     /**
      * 添加控件和菜单栏
+     * 页面布局
+     * 最上方为user
+     * 紧贴左边，往下1/5，放棋盘
+     * 左偏右3/4处，往下1/5，分别放聊天室和控制键
      */
     private void addWidget() {
+
         int x = 5;
         int y = 2;
         int mWidth = width / 4 * 3;
         int mHeight = width / 5;
 
         this.setJMenuBar(new MyMenuBar());
+
 
         getContentPane().add(new UserPanel());
         UserPanel.userPanel.setBounds(x, y, mWidth, mHeight);
@@ -80,10 +86,10 @@ public class MainFrame extends JFrame {
 
         getContentPane().add(new ChatRoom());
         ChatRoom.myRoom.setBounds(mWidth + 2 * x, mHeight + 2 * y, width - mWidth
-                - 2 * x, (height - mHeight - 2) / 2 * y);
+                - 2 * x, height - mHeight - 2);
 
         getContentPane().add(new ControlPanel());
-        ControlPanel.my.setBounds(mWidth + 2 * x, 340, width - mWidth - 2 * x,
+        ControlPanel.my.setBounds(mWidth + 2 * x, (mHeight + 2 * y)+(width - mWidth)+100, width - mWidth - 2 * x,
                 height - mHeight - 2 * y);
     }
 

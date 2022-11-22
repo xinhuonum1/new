@@ -6,11 +6,11 @@ package com.ypr.whb.data;
  * @author chaos
  */
 public class Player {
-    protected String name;
-    protected String address = "无IP地址(本地玩家)";
-    protected int grade = 100;
+    String name;
+    String address = "无IP地址(本地玩家)";
+    int grade = 100;
     protected String color = Spot.notChess;
-    protected static int playerIndex = 1;
+    static int playerIndex = 1;
     // 储存对战玩家，我方，对方
     public static Player myPlayer, otherPlayer;
 

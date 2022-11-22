@@ -54,14 +54,14 @@ public class Spot {
     /**
      * 获得相反颜色棋子的值
      */
-    public static String getBackColor(String mColor) {
+    static String getBackColor(String mColor) {
         return Spot.blackChess.equals(mColor) ? Spot.whiteChess : Spot.blackChess;
     }
 
     /**
      * 返回棋子颜色字符串
      */
-    public static String getColorString(String mColor) {
+    static String getColorString(String mColor) {
         if (Spot.notChess.equals(mColor)) {
             return "未得到棋子";
         }
